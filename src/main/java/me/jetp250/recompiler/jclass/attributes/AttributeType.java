@@ -38,7 +38,7 @@ public enum AttributeType {
     NEST_MEMBERS("NestMembers", NestMembersAttribute::new);
 
     interface AttributeFactory {
-        Attribute create(DataInput input) throws IOException;
+        Attribute create(int attributeNameIndex, DataInput input) throws IOException;
     }
 
     private final String tag;
@@ -49,8 +49,8 @@ public enum AttributeType {
         this.factory = factory;
     }
 
-    public Attribute readAttribute(DataInput input) throws IOException {
-        return factory.create(input);
+    public Attribute readAttribute(int attributeNameIndex, DataInput input) throws IOException {
+        return factory.create(attributeNameIndex, input);
     }
 
     private static Map<String, AttributeType> TAG_TO_ENUM_MAP;

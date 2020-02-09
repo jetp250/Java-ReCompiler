@@ -4,34 +4,34 @@ import me.jetp250.recompiler.jclass.attributes.Attribute;
 import me.jetp250.recompiler.jclass.attributes.AttributeType;
 import me.jetp250.recompiler.jclass.constants.ConstantPool;
 import me.jetp250.recompiler.jclass.constants.PoolEntry;
-import me.jetp250.recompiler.jclass.constants.types.UTF8Entry;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 
 public final class ConstantValueAttribute extends Attribute {
-    public final int nameIndex;
+    private static final int ATTRIBUTE_LENGTH = 2;
+
     public final int valueIndex;
 
-    public ConstantValueAttribute(int nameIndex, int valueIndex) {
-        super(AttributeType.CONSTANT_VALUE);
-        this.nameIndex = nameIndex;
+    public ConstantValueAttribute(int attributeNameIndex, int valueIndex) {
+        super(AttributeType.CONSTANT_VALUE, attributeNameIndex, ATTRIBUTE_LENGTH);
         this.valueIndex = valueIndex;
     }
 
-    public ConstantValueAttribute(DataInput dataInput) throws IOException {
-        super(AttributeType.CONSTANT_VALUE);
-        this.nameIndex = dataInput.readUnsignedShort();
-        int mustBeTwo = dataInput.readUnsignedShort();
+    public ConstantValueAttribute(int attributeNameIndex, DataInput dataInput) throws IOException {
+        super(AttributeType.CONSTANT_VALUE, attributeNameIndex, ATTRIBUTE_LENGTH);
+        int mustBeTwo = dataInput.readUnsignedShort(); // read attribute_length
         this.valueIndex = dataInput.readUnsignedShort();
 
-        if (mustBeTwo != 2)
-            throw new IllegalStateException("The 'attribute length' parameter of ConstantValueAttribute must be 2, was " + mustBeTwo);
+        if (mustBeTwo != ATTRIBUTE_LENGTH)
+            throw new IllegalStateException("The 'attribute length' parameter of ConstantValueAttribute must be "
+                    + ATTRIBUTE_LENGTH + ", was " + mustBeTwo);
     }
 
-    public String resolveName(ConstantPool pool) {
-        PoolEntry entry = pool.getEntry(nameIndex - 1);
-        return (entry instanceof UTF8Entry) ? ((UTF8Entry)entry).getString() : null;
+    @Override
+    protected void writeBytes0(DataOutput output) throws IOException {
+        output.writeShort(valueIndex);
     }
 
     public PoolEntry getValueConstant(ConstantPool pool) {
