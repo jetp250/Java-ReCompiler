@@ -1,0 +1,6 @@
+A *lot* needs to be validated, both when compiling and when loading from .class.
+Right now some validation methods are in JavaClassHeader.java (i.e "checkVersion()", "checkMagicConstant()"),
+but extremely insufficient.
+
+To do: refactor different kinds of validations to this package, maybe design a system to better
+integrate the validations into the progress

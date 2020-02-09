@@ -27,7 +27,13 @@ public abstract class PoolEntry {
     }
 
     public static PoolEntry fromBytes(DataInput input) throws IOException {
-        ConstantType tag = ConstantType.fromTagByte(input.readByte());
+        byte bTag = input.readByte();
+
+        ConstantType tag = ConstantType.fromTagByte(bTag);
+        if (tag == null)
+            System.out.println("No tag found for bTag=" + bTag);
+        else
+            System.out.println("Read tag: " + tag.name());
         return tag.readEntry(input);
     }
 }

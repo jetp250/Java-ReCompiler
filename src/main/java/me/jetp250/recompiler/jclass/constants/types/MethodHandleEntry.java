@@ -9,17 +9,17 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public final class MethodHandleEntry extends PoolEntry {
-    private short referenceKind;
-    private short referenceIndex;
+    private int referenceKind;
+    private int referenceIndex;
 
-    public MethodHandleEntry(short referenceKind, short referenceIndex) {
+    public MethodHandleEntry(int referenceKind, int referenceIndex) {
         super(ConstantType.METHOD_HANDLE);
         this.referenceKind = referenceKind;
         this.referenceIndex = referenceIndex;
     }
 
     public MethodHandleEntry(DataInput input) throws IOException {
-        this(input.readByte(), input.readByte());
+        this(input.readUnsignedByte(), input.readUnsignedShort());
     }
 
     @Override

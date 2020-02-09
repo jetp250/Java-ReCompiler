@@ -44,6 +44,9 @@ public class JavaClassHeader {
 
     public final String[] interfaces;
 
+    public final JavaField[] fields;
+    public final JavaMethod[] methods;
+
     private JavaClassHeader(DataInput input) throws IOException {
         checkMagicConstant(input.readInt());
         this.classVersion = JavaVersion.fromBytes(input);
@@ -52,6 +55,8 @@ public class JavaClassHeader {
         this.className = getClassName(input, constantPool);
         this.superclassName = getClassName(input, constantPool);
         this.interfaces = getInterfaces(input, constantPool);
+        this.fields = getFields(input, constantPool);
+        this.methods = getMethods(input, constantPool);
 
         checkVersion(this.classVersion);
     }
@@ -73,8 +78,28 @@ public class JavaClassHeader {
         return new JavaClassHeader(input);
     }
 
+    private static JavaMethod[] getMethods(DataInput input, ConstantPool pool) throws IOException {
+        int numMethods = input.readUnsignedShort();
+        JavaMethod[] methods = new JavaMethod[numMethods];
+
+        for (int i = 0; i < numMethods; ++i) {
+            methods[i] = JavaMethod.fromBytes(input, pool);
+        }
+        return methods;
+    }
+
+    private static JavaField[] getFields(DataInput input, ConstantPool pool) throws IOException {
+        int numFields = input.readUnsignedShort();
+        JavaField[] fields = new JavaField[numFields];
+
+        for (int i = 0; i < numFields; ++i) {
+            fields[i] = JavaField.fromBytes(input, pool);
+        }
+        return fields;
+    }
+
     private static String[] getInterfaces(DataInput input, ConstantPool pool) throws IOException {
-        String[] interfaces = new String[input.readShort()];
+        String[] interfaces = new String[input.readUnsignedShort()];
         for (int i = 0; i < interfaces.length; ++i) {
             interfaces[i] = getClassName(input, pool);
         }
@@ -82,7 +107,7 @@ public class JavaClassHeader {
     }
 
     private static String getClassName(DataInput input, ConstantPool pool) throws IOException {
-        short poolIndex = input.readShort();
+        int poolIndex = input.readUnsignedShort();
         PoolEntry entry = pool.getEntry(poolIndex - 1);
         if (entry instanceof ClassEntry) {
             return ((ClassEntry)entry).getClassName(pool);

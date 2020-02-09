@@ -31,11 +31,11 @@ public enum ConstantType {
         PoolEntry create(DataInput input) throws IOException;
     }
 
-    private final byte tag;
+    private final int tag; // 0-255
     private final PoolEntryFactory factory;
 
     ConstantType(int tag, PoolEntryFactory factory) {
-        this.tag = (byte) tag;
+        this.tag = tag;
         this.factory = factory;
     }
 

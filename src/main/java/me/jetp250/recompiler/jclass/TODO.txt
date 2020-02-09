@@ -1,0 +1,18 @@
+General TODOs:
+- I mistakenly used `dataInput.readShort()` and 'dataInput.readByte()' in various places.
+  All of these should be changed to `dataInput.readUnsignedShort()` and `dataUnsignedByte()`, respectively.
+  Also change data types from 'short' and 'byte' to 'int'.
+
+  (Not super critical; fixing this only fixes *very* rare cases)
+
+- Get rid of the 'descriptor' fields in JavaField and JavaMethod.
+  - When parsing a .class file, the descriptor fields should be broken to some more intuitive type
+  - When compiling, do the same ^ but in reverse.
+
+- Implement JavaClass
+  - JavaClass should be a pretty programmer-friendly class (unlike JavaClassHeader and everything in the 'constants' package).
+  - The JavaClass, when compiling, is responsible for creating the JavaClassHeader which is actually compiled.
+    The programmer shouldn't have to ever do anything but possibly read from JavaClassHeader
+
+
+Also see TODOs in the 'validators' package + the ones the IDE lists
